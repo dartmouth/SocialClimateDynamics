@@ -8,7 +8,7 @@ from scipy.integrate import odeint
 delay = 10
 
 # Define the delay differential equations
-def model(Y, t, Tv, Tc, d):
+def model(Y, t, d, Tv, Tc):
     v, x = Y(t)
     v_lag, x_lag = Y(t-d)
 
@@ -33,7 +33,7 @@ def uncoupled_model(v,t,gamma,Tv):
 
 
 def history_function(v0, x0, Tv):
-    time = np.linspace(0,10,10000)
+    time = np.linspace(0, delay,10000)
     v=odeint(uncoupled_model, v0, time,args=(gamma, Tv))
     v = v.flatten()
     x0_array = np.full_like(v, x0)
@@ -47,8 +47,6 @@ def history_function(v0, x0, Tv):
             return output[idx - 1]
     return history
 
-
-# Time grid
 tspan = np.linspace(delay, 200, 10000)
 
 
@@ -88,6 +86,17 @@ plt.plot(tspan, sol1_9[:, 1], label="Mitigation")
 plt.xlabel("Time (years)")
 plt.ylabel("Proportions")
 plt.title("V0=0.5, X0=0.5, Tv=15, Tc=2")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+sol9b = ddeint(model, history_function(0.9,0.9,31.5), tspan, fargs=(delay, 31.5, 2))
+plt.figure(figsize=(10, 6))
+plt.plot(tspan, sol9b[:, 0], label="Vegetation")
+plt.plot(tspan, sol9b[:, 1], label="Mitigation")
+plt.xlabel("Time (years)")
+plt.ylabel("Proportions")
+plt.title("V0=0.9, X0=0.9, Tv=31.5, Tc=2")
 plt.legend()
 plt.grid(True)
 plt.show()
