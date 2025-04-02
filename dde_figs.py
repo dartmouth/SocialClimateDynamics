@@ -28,7 +28,7 @@ a=5
 
 
 def uncoupled_model(v,t,gamma,Tv):
-    dvdt = v*(2*(1-v)*(1-((Tv-a*(1-v)-Topt)/beta)**2)-gamma)
+    dvdt = v*(2*(1-v)*(1-((Tv+a*(1-v)-Topt)/beta)**2)-gamma)
     return dvdt
 
 
