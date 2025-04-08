@@ -6,6 +6,10 @@ from ddeint import ddeint
 from scipy.integrate import odeint
 
 delay = 10
+fmax = 5 # Maximum warming cost
+w = 3 # Non-linearity of warming cost
+delta = 2 # strength of social norms
+alpha = 1 # cost of mitigation
 
 # Define the delay differential equations
 def model(Y, t, d, Tv, Tc):
@@ -16,7 +20,7 @@ def model(Y, t, d, Tv, Tc):
     dv_dt = 2 * (1 - 0.01 * (Tv - 23 - 5 * v)**2) * (0.2 + 0.4 * x) * v * (1 - v) - 0.2 * v
 
     # Equation for dx/dt
-    dx_dt = x * (1 - x) * (2 * x - 2 + 5 / (1 + np.exp(-3 * (-7.5 * v + 7.5 * v_lag - Tc))))
+    dx_dt = x * (1 - x) * (delta * (2 * x - 1) - alpha + fmax / (1 + np.exp(-1 * w * (-7.5 * v + 7.5 * v_lag - Tc))))
 
     return [dv_dt, dx_dt]
 
@@ -59,6 +63,7 @@ plt.plot(tspan, sol1[:, 0], label="Vegetation")
 plt.plot(tspan, sol1[:, 1], label="Mitigation")
 plt.xlabel("Time (years)")
 plt.ylabel("Proportions")
+plt.ylim(0,1)
 plt.title("V0=0.1, X0=0.9, Tv=31.5, Tc=2")
 plt.legend()
 plt.grid(True)
@@ -70,6 +75,7 @@ plt.plot(tspan, sol2[:, 0], label="Vegetation")
 plt.plot(tspan, sol2[:, 1], label="Mitigation")
 plt.xlabel("Time (years)")
 plt.ylabel("Proportions")
+plt.ylim(0,1)
 plt.title("V0=0.1, X0=0.9, Tv=32.5, Tc=2.5")
 plt.legend()
 plt.grid(True)
@@ -85,6 +91,7 @@ plt.plot(tspan, sol1_9[:, 0], label="Vegetation")
 plt.plot(tspan, sol1_9[:, 1], label="Mitigation")
 plt.xlabel("Time (years)")
 plt.ylabel("Proportions")
+plt.ylim(0,1)
 plt.title("V0=0.5, X0=0.5, Tv=15, Tc=2")
 plt.legend()
 plt.grid(True)
@@ -96,7 +103,56 @@ plt.plot(tspan, sol9b[:, 0], label="Vegetation")
 plt.plot(tspan, sol9b[:, 1], label="Mitigation")
 plt.xlabel("Time (years)")
 plt.ylabel("Proportions")
+plt.ylim(0,1)
 plt.title("V0=0.9, X0=0.9, Tv=31.5, Tc=2")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+sol10a = ddeint(model, history_function(0.1,0.1,34), tspan, fargs=(delay, 34, 0.5))
+plt.figure(figsize=(10, 6))
+plt.plot(tspan, sol10a[:, 0], label="Vegetation")
+plt.plot(tspan, sol10a[:, 1], label="Mitigation")
+plt.xlabel("Time (years)")
+plt.ylabel("Proportions")
+plt.ylim(0,1)
+plt.title("V0=0.1, X0=0.1, Tv=34, Tc=0.5")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+sol10b = ddeint(model, history_function(0.9,0.1,13), tspan, fargs=(delay, 13, 1.5))
+plt.figure(figsize=(10, 6))
+plt.plot(tspan, sol10b[:, 0], label="Vegetation")
+plt.plot(tspan, sol10b[:, 1], label="Mitigation")
+plt.xlabel("Time (years)")
+plt.ylabel("Proportions")
+plt.ylim(0,1)
+plt.title("V0=0.9, X0=0.1, Tv=13, Tc=1.5")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+sol11a = ddeint(model, history_function(0.1,0.1,25), tspan, fargs=(delay, 25, 1.5))
+plt.figure(figsize=(10, 6))
+plt.plot(tspan, sol11a[:, 0], label="Vegetation")
+plt.plot(tspan, sol11a[:, 1], label="Mitigation")
+plt.xlabel("Time (years)")
+plt.ylabel("Proportions")
+plt.ylim(0,1)
+plt.title("V0=0.1, X0=0.1, Tv=25, Tc=1.5")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+sol11b = ddeint(model, history_function(0.1,0.9,25), tspan, fargs=(delay, 25, 1))
+plt.figure(figsize=(10, 6))
+plt.plot(tspan, sol11b[:, 0], label="Vegetation")
+plt.plot(tspan, sol11b[:, 1], label="Mitigation")
+plt.xlabel("Time (years)")
+plt.ylabel("Proportions")
+plt.ylim(0,1)
+plt.title("V0=0.1, X0=0.9, Tv=25, Tc=1")
 plt.legend()
 plt.grid(True)
 plt.show()
