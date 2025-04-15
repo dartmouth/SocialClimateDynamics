@@ -8,26 +8,29 @@ import seaborn as sns
 from dde_figs import uncoupled_model
 #from numba import njit
 
-gamma = 0.2
-
-fmax = 5 # Between 4 and 6
-alpha_r = 0.5 # Between 0.45 and 0.55
-delta = 1 # Between 0.5 and 1.5
-kappa = 0.05 # Between 0.02 and 0.2
-alpha_p0 = 1 # Between 0.9 and 1.1
-xr0 = 0.1
-xp0 = 0.5
-ir0 = 5 # Between 4.5 and 5.5
-ip0 = 3.5 # Between 3.15 and 3.85
-rho = 0.25 # Size of rich group, between 
-cr = 0.4 # Between 
-cp = 0.85
-kr = 1
-kp = 1.5
+gamma = 0.2 # Disturbance rate
+fmax = 5 # Maximum warming cost, between 4 and 6
+alpha_r = 0.5 # Cost of mitigation for rich group, between 0.45 and 0.55
+delta = 1 # Strength of social norms, between 0.5 and 1.5
+kappa = 0.05 # Social learning rate, between 0.02 and 0.2
+alpha_p0 = 1 # Cost of mitigation for poor group, between 0.9 and 1.1
+xr0 = 0.1 # Initial mitigation rate in the rich subpopulation
+xp0 = 0.8 # Initial mitigation rate in the poor subpopulation
+ir0 = 5 # Initial income of rich group, between 4.5 and 5.5
+ip0 = 3.5 # Initial income of poor group, between 3.15 and 3.85
+rho = 0.25 # Size of rich group relative to poor group, between 0 and 0.5
+cr = 0.4 # Maximum of income cost function for rich subpopulation, between 0.36 and 0.44
+cp = 0.85 # Maximum of income cost function for poor subpopulation, between 0.765 and 0.935
+kr = 1 # Nonlinearity of income impact function for rich subpopulation, between 0.9 and 1.1
+kp = 1.5 # Nonlinearity of income impact function for poor subpopulation, between 1.35 and 1.65
 h = 0.5 # Homophily parameter, between 0 and 1
-d = 5
-w = 3
-dc = 1.5
+d = 5 # Maximum cost of dissatisfaction, between 0 and 10
+w = 3 # Nonlinearity of warming cost, between 2.7 and 3.3
+omega = 3 # Nonlinearity of dissatisfaction cost, between 2.7 and 3.3
+dc = 1.5 # Critical value of dissatisfaction cost, between 1.35 and 1.65
+
+time_delay = 10
+tspan = np.linspace(time_delay, 200, 10000)
 
 def heterogeneous_pop_model(Y, t, delay, Tv, Tc):
     v, xp, xr = Y(t)
@@ -37,7 +40,7 @@ def heterogeneous_pop_model(Y, t, delay, Tv, Tc):
     ir = ir0 * max(gr, 0)
     ip = ip0 * max(gp, 0)
     x = rho * xr + (1-rho) * xp
-    alpha_p = alpha_p0 + d/(1+np.exp(-1 * w*((1-xr)/(1-xr0))*(ir/ip)*(ip0/ir0)-dc))
+    alpha_p = alpha_p0 + d/(1+np.exp(-1 * omega *((1-xr)/(1-xr0))*(ir/ip)*(ip0/ir0)-dc))
 
     dv_dt = 2 * (1 - 0.01 * (Tv - 23 - 5 * v)**2) * (0.2 + 0.4 * x) * v * (1 - v) - 0.2 * v
 
@@ -53,9 +56,9 @@ def heterogeneous_pop_model(Y, t, delay, Tv, Tc):
 
     return [dv_dt, dxp_dt, dxr_dt]
 
-time_delay = 10
 
-def doub_history_function(v0, xr0, xp0, Tv):
+
+def doub_history_function(v0, Tv):
     time = np.linspace(0, time_delay,10000)
     v=odeint(uncoupled_model, v0, time,args=(gamma, Tv))
     v = v.flatten()
@@ -67,22 +70,25 @@ def doub_history_function(v0, xr0, xp0, Tv):
         if idx == 0:
             return output[0]
         else:
-            print("Time=", time[idx-1], output[idx-1])
+            #print("Time=", time[idx-1], output[idx-1])
             return output[idx - 1]
     return history
 
-tspan = np.linspace(time_delay, 200, 10000)
+tv_vals = np.linspace(20, 30, 5)
+tc_vals = np.linspace(1, 3, 5)
 
-test = ddeint(heterogeneous_pop_model, doub_history_function(0.5, 0.5, 0.5, 30), tspan, fargs = (time_delay, 30, 2))
+for i, Tv in enumerate(tv_vals):
+    for j, Tc in enumerate(tc_vals):
+        test = ddeint(heterogeneous_pop_model, doub_history_function(0.1, Tv), tspan, fargs=(time_delay, Tv, Tc))
 
-plt.figure(figsize=(10, 6))
-plt.plot(tspan, test[:, 0], label="Vegetation")
-plt.plot(tspan, test[:, 1], label="Mitigation: Rich")
-plt.plot(tspan, test[:, 2], label = "Mitigation: Poor")
-plt.xlabel("Time (years)")
-plt.ylabel("Proportions")
-plt.ylim(0,1)
-plt.title("V0=0.5, Xr0=0.5, Xp0=0.5, Tv=30, Tc=2")
-plt.legend()
-plt.grid(True)
-plt.show()
+        plt.figure(figsize=(10, 6))
+        plt.plot(tspan, test[:, 0], label="Vegetation")
+        plt.plot(tspan, test[:, 1], label="Mitigation: Rich")
+        plt.plot(tspan, test[:, 2], label = "Mitigation: Poor")
+        plt.xlabel("Time (years)")
+        plt.ylabel("Proportions")
+        plt.ylim(0,1)
+        plt.title(f"v0=0.1, Xr0={xr0}, Xp0={xp0}, Tv={Tv}, Tc={Tc}")
+        plt.legend()
+        plt.grid(True)
+        plt.show()
