@@ -42,9 +42,9 @@ def create_heatmap_temp(y_vals, x_vals):
     return outcome_grid
       
 
-# sns.heatmap(data=create_heatmap_temp(Tc_values, Tv_values), cmap="viridis")
-# plt.title('v0=0.1, x0=0.9')
-# plt.show()
+sns.heatmap(data=create_heatmap_temp(Tc_values, Tv_values), cmap="viridis")
+plt.title('v0=0.1, x0=0.9')
+plt.show()
 
 def create_heatmap_conditional(y_vals, x_vals, type='temp', v0=0.1, x0=0.9):
     outcome_grid = np.empty((len(y_vals), len(x_vals)))
@@ -89,24 +89,24 @@ def create_heatmap_conditional(y_vals, x_vals, type='temp', v0=0.1, x0=0.9):
                 outcome_grid[i,j] = classify_outcome(v_final_val, x_final_val, avg_column_0, avg_column_1)
         return outcome_grid
 
-# sns.heatmap(data=create_heatmap_conditional(Tc_values, Tv_values, type='temp', v0=0.2, x0=0.8), cmap='YlGnBu_r')
-# plt.title(f"v0={v0}, x0={x0}")
-# plt.xticks(np.arange(0,steps,step=1), labels = np.round(Tv_values, 1))
-# plt.yticks(np.arange(0,steps, step=1), labels = np.round(Tc_values, 1))
-# plt.xlabel('Tv')
-# plt.ylabel('Tc')
-# plt.show()
+sns.heatmap(data=create_heatmap_conditional(Tc_values, Tv_values, type='temp', v0=0.2, x0=0.8), cmap='YlGnBu_r')
+plt.title(f"v0={v0}, x0={x0}")
+plt.xticks(np.arange(0,steps,step=1), labels = np.round(Tv_values, 1))
+plt.yticks(np.arange(0,steps, step=1), labels = np.round(Tc_values, 1))
+plt.xlabel('Tv')
+plt.ylabel('Tc')
+plt.show()
 
 fmax_vals = np.linspace(0,10,steps)
 w_vals = np.linspace(0,10,steps)
 
 
-# sns.heatmap(data=create_heatmap_conditional(fmax_vals, w_vals, type='warm'), cmap='YlGnBu_r')
-# plt.xticks(np.arange(0,steps,step=1), labels = np.round(fmax_vals, 1))
-# plt.yticks(np.arange(0,steps, step=1), labels = np.round(w_vals, 1))
-# plt.xlabel('fmax')
-# plt.ylabel('w')
-# plt.show()
+sns.heatmap(data=create_heatmap_conditional(fmax_vals, w_vals, type='warm'), cmap='YlGnBu_r')
+plt.xticks(np.arange(0,steps,step=1), labels = np.round(fmax_vals, 1))
+plt.yticks(np.arange(0,steps, step=1), labels = np.round(w_vals, 1))
+plt.xlabel('fmax')
+plt.ylabel('w')
+plt.show()
 
 
 def reverse_parameter_sweep(Tv, Tc):
@@ -126,8 +126,8 @@ def reverse_parameter_sweep(Tv, Tc):
     return outcome_grid
 
 
-# sns.heatmap(data=reverse_parameter_sweep(30, 2))
-# plt.show()
+sns.heatmap(data=reverse_parameter_sweep(30, 2))
+plt.show()
 
 
 

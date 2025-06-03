@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from ddeint import ddeint
 from scipy.integrate import odeint
+from scipy.special import expit
 
 delay = 10
 fmax = 5 # Maximum warming cost
@@ -14,6 +15,12 @@ alpha = 1 # cost of mitigation
 def model(Y, t, d, Tv, Tc, fmax=5, w=3, delta=1, alpha=1):
     v, x = Y(t)
     v_lag, x_lag = Y(t-d)
+    #v = np.clip(v, 0, 1)
+    #x = np.clip(x, 0, 1)
+    #v_lag = np.clip(v_lag, 0, 1)
+    #x_lag = np.clip(x_lag, 0, 1)
+    #z = w * (7.5 * v - 7.5 * v_lag + Tc)
+    #fTf = fmax*expit(z)
     fTf = fmax/(1+np.exp(-1 * w * (-7.5 * v + 7.5 * v_lag - Tc)))
 
     dv_dt = 2 * (1 - 0.01 * (Tv - 23 - 5 * v)**2) * (0.2 + 0.4 * x) * v * (1 - v) - 0.2 * v
