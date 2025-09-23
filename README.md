@@ -9,11 +9,6 @@ The preprint is available on arXiv.
 - Plotly_plot.ipynb: Jupyter notebook that generates static and interactive phase portraits (Figure 1)
 - outcomesovertime.ipynb: Jupyter notebook that generates mitigation proportion trajectories (Figures 3, 5)
 - heatmaps.ipynb: Jupyter notebook that generates mitigation proportion trajectories (Figures 2, 4, 6-8)
-- heatmap.py: Script that generates heatmaps of forest coverage
-- dde_figs.py: Script that shows mitigation proportion trajectories for multiple parameter sets
-- heterogenous_pop_.py: Script that shows a particular mitigation proportion trajectory
-- fu_shu_equations.py: Script that shows proportion of vegetation and mitigators using DDE
-- first_half_eq.py: Script that reproduces figures from doi:10.1098/rspa.2023.0679
 
 ## Running
 To run the simulations, create a virtual environment
