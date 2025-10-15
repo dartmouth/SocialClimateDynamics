@@ -9,6 +9,8 @@ The preprint is available on arXiv.
 - Plotly_plot.ipynb: Jupyter notebook that generates static and interactive phase portraits (Figure 1)
 - outcomesovertime.ipynb: Jupyter notebook that generates mitigation proportion trajectories (Figures 3, 5)
 - heatmaps.ipynb: Jupyter notebook that generates mitigation proportion trajectories (Figures 2, 4, 6-8)
+- dde_figs.py: Script that shows mitigation proportion trajectories for multiple parameter sets
+- heterogenous_pop_.py: Script that shows a particular mitigation proportion trajectory
 
 ## Running
 To run the simulations, create a virtual environment
